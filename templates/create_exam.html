@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card"><h2>Create New Examination</h2>
+
+<p>Create and configure a CBT examination.</p>
+
+<form method="POST">
+
+    <label>Exam Title</label>
+    <input
+        type="text"
+        name="title"
+        placeholder="e.g. OAU Post-UTME Biology 2026"
+        required
+    >
+
+    <label>Subject</label>
+    <input
+        type="text"
+        name="subject"
+        placeholder="Biology"
+        required
+    >
+
+    <label>Duration (Minutes)</label>
+    <input
+        type="number"
+        name="duration"
+        value="60"
+        min="1"
+        required
+    >
+
+    <label>Pass Mark (%)</label>
+    <input
+        type="number"
+        name="pass_mark"
+        value="50"
+        min="0"
+        max="100"
+    >
+
+    <label>Instructions</label>
+    <textarea
+        name="instructions"
+        rows="5"
+        placeholder="Enter examination instructions..."
+    ></textarea>
+
+    <label>Question Randomization</label>
+    <select name="randomize_questions">
+        <option value="yes">Enable</option>
+        <option value="no">Disable</option>
+    </select>
+
+    <label>Publish Exam</label>
+    <select name="is_published">
+        <option value="0">Save as Draft</option>
+        <option value="1">Publish Immediately</option>
+    </select>
+
+    <br><br>
+
+    <button type="submit" class="btn-primary">
+        Create Examination
+    </button>
+
+</form>
+
+</div>{% endblock %}

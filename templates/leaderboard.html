@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+  
+    <h2>🏆 Leaderboard</h2>
+
+    {% for r in results %}
+
+        <div style="
+            padding:12px;
+            border-bottom:1px solid #eee;
+            display:flex;
+            justify-content:space-between;
+        ">
+
+            <div>
+              <p><b>Student:</b> {{ r.user.full_name }}</p>
+                <small>{{ r.timestamp }}</small>
+            </div>
+
+            <div style="font-size:18px; font-weight:bold;">
+                {{ r.score }} / {{ r.total }}
+            </div>
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

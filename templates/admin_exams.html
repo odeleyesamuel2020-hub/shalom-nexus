@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>📚 All Exams</h2>
+
+{% for exam in exams %}
+
+<div class="card">
+
+    <h3>{{ exam.title }}</h3>
+    <p>{{ exam.subject }}</p>
+
+    <div class="action-grid">
+
+        <a href="{{ url_for('manage_exam', exam_id=exam.id) }}" class="action-btn">
+            ⚙️ Manage
+        </a>
+
+        <a href="{{ url_for('question_builder', exam_id=exam.id) }}" class="action-btn">
+            ➕ Questions
+        </a>
+
+        <a href="{{ url_for('publish_exam', exam_id=exam.id) }}" class="action-btn">
+            🚀 Publish
+        </a>
+
+        <a href="{{ url_for('view_results', exam_id=exam.id) }}" class="action-btn">
+            📊 Results
+        </a>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+{% endblock %}

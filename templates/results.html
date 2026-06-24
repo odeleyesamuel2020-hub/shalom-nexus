@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="results-container">
+
+    <div class="results-header">
+        <h1>📊 My Exam Results</h1>
+        <p>View all completed examinations and performance records.</p>
+    </div>
+
+    {% if results %}
+
+        <div class="results-grid">
+
+            {% for result in results %}
+
+            <div class="result-card">
+
+                <div class="card-top">
+
+                    <h3>Exam #{{ result.exam_id }}</h3>
+
+                    {% if result.score >= 50 %}
+                        <span class="badge pass">PASS</span>
+                    {% else %}
+                        <span class="badge fail">FAIL</span>
+                    {% endif %}
+
+                </div>
+
+                <div class="result-body">
+
+                    <p>
+                        <strong>Score:</strong>
+                        {{ result.score }}
+                    </p>
+
+                    <p>
+                        <strong>Exam ID:</strong>
+                        {{ result.exam_id }}
+                    </p>
+
+                    <p>
+                        <strong>Submitted:</strong>
+                        {{ result.submitted_at }}
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <h3>No Results Yet</h3>
+
+            <p>
+                You have not completed any examinations.
+            </p>
+
+            <a href="{{ url_for('exams') }}" class="btn">
+                📚 Take an Exam
+            </a>
+
+        </div>
+
+    {% endif %}
+
+    <div style="margin-top:30px;text-align:center;">
+        <a href="{{ url_for('dashboard') }}" class="btn">
+            🏠 Back to Dashboard
+        </a>
+    </div>
+
+</div>
+
+<style>
+
+.results-container{
+    max-width:1100px;
+    margin:auto;
+    padding:20px;
+}
+
+.results-header{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.results-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:20px;
+}
+
+.result-card{
+    background:#fff;
+    border-radius:15px;
+    padding:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
+
+.card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.badge{
+    padding:6px 14px;
+    border-radius:20px;
+    color:white;
+    font-size:13px;
+    font-weight:bold;
+}
+
+.pass{
+    background:#28a745;
+}
+
+.fail{
+    background:#dc3545;
+}
+
+.result-body p{
+    margin:8px 0;
+}
+
+.empty-state{
+    text-align:center;
+    background:#fff;
+    padding:40px;
+    border-radius:15px;
+}
+
+.btn{
+    display:inline-block;
+    padding:10px 20px;
+    background:#0d6efd;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
+}
+
+</style>
+
+{% endblock %}

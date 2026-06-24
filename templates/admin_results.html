@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+
+    <h2>All Student Results</h2>
+
+    {% for r in results %}
+
+        <div style="
+            padding:10px;
+            border-bottom:1px solid #eee;
+        ">
+
+            <p><b>User ID:</b> {{ r.user_id }}</p>
+            <p><b>Exam ID:</b> {{ r.exam_id }}</p>
+            <p><b>Score:</b> {{ r.score }} / {{ r.total }}</p>
+            <p><b>Date:</b> {{ r.timestamp }}</p>
+
+        </div>
+
+    {% endfor %}
+    
+     <a href="/leaderboard/1">🏆 View Leaderboard (Exam 1)</a>
+     
+</div>
+
+{% endblock %}

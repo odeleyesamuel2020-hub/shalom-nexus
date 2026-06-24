@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="dashboard-header">
+
+    <div>
+        <h1>📘 Manage Exam</h1>
+        <p>{{ exam.title }} - {{ exam.subject }}</p>
+    </div>
+
+    <a href="{{ url_for('admin_dashboard') }}" class="btn">
+        ⬅ Back to Dashboard
+    </a>
+
+</div>
+
+<!-- EXAM INFO CARD -->
+<div class="card">
+
+    <h3>📊 Exam Details</h3>
+
+    <p><strong>Title:</strong> {{ exam.title }}</p>
+    <p><strong>Subject:</strong> {{ exam.subject }}</p>
+    <p><strong>Duration:</strong> {{ exam.duration }} mins</p>
+    <p><strong>Status:</strong>
+        {% if exam.is_published %}
+            <span style="color:green;">Published</span>
+        {% else %}
+            <span style="color:red;">Draft</span>
+        {% endif %}
+    </p>
+
+</div>
+
+<!-- ACTION BUTTONS -->
+<div class="card">
+
+    <h3>⚙️ Exam Actions</h3>
+
+    <div class="action-grid">
+
+        <a href="{{ url_for('question_builder', exam_id=exam.id) }}" class="action-btn">
+            ➕ Add / Edit Questions
+        </a>
+
+        <a href="{{ url_for('publish_exam', exam_id=exam.id) }}" class="action-btn">
+            🚀 Publish Exam
+        </a>
+
+        <a href="{{ url_for('view_results', exam_id=exam.id) }}" class="action-btn">
+            📊 View Results
+        </a>
+
+        <a href="{{ url_for('exams') }}" class="action-btn">
+            👨‍🎓 Student View
+        </a>
+
+    </div>
+
+</div>
+
+<!-- QUESTIONS LIST -->
+<div class="card">
+
+    <h3>🧠 Questions ({{ questions|length }})</h3>
+
+    {% if questions %}
+
+        {% for q in questions %}
+
+        <div style="padding:10px; border-bottom:1px solid #eee;">
+
+            <p><strong>Q:</strong> {{ q.question }}</p>
+
+            <p>
+                A: {{ q.option_a }} |
+                B: {{ q.option_b }} |
+                C: {{ q.option_c }} |
+                D: {{ q.option_d }}
+            </p>
+
+            <p>
+                <strong>Answer:</strong>
+                <span style="color:green;">{{ q.answer }}</span>
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No questions added yet.</p>
+
+    {% endif %}
+
+</div>
+
+<!-- STYLES -->
+<style>
+
+.action-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:10px;
+    margin-top:10px;
+}
+
+.action-btn{
+    display:block;
+    padding:12px;
+    background:#007bff;
+    color:white;
+    text-align:center;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:500;
+}
+
+.action-btn:hover{
+    background:#0056b3;
+}
+
+</style>
+
+{% endblock %}
