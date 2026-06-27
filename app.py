@@ -1591,8 +1591,7 @@ def start_exam(exam_id):
         )
     )
 
-#TAKE EXAM ROUTES
-@app.route("/exam/<int:exam_id>")
+#T@app.route("/exam/<int:exam_id>")
 @login_required
 def take_exam(exam_id):
 
@@ -1602,9 +1601,17 @@ def take_exam(exam_id):
         exam_id=exam.id
     ).all()
 
+    if not questions:
+        flash(
+            "No questions have been added to this exam.",
+            "warning"
+        )
+        return redirect(url_for("dashboard"))
+
     if exam.shuffle_questions:
         random.shuffle(questions)
 
+    # Find existing unfinished session
     session = ExamSession.query.filter_by(
         user_id=current_user.id,
         exam_id=exam.id,
@@ -1613,18 +1620,21 @@ def take_exam(exam_id):
         ExamSession.id.desc()
     ).first()
 
+    # Create session automatically if none exists
     if not session:
 
-        flash(
-            "Exam session not found.",
-            "danger"
+        session = ExamSession(
+            user_id=current_user.id,
+            exam_id=exam.id,
+            submitted=False,
+            score=0,
+            session_token=str(uuid.uuid4())
         )
 
-        return redirect(
-            url_for("dashboard")
-        )
+        db.session.add(session)
+        db.session.commit()
 
-    session.last_activity = datetime.utcnow()
+    session.last_activity = datetime.now(UTC)
 
     db.session.commit()
 
