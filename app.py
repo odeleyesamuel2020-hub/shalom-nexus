@@ -1848,7 +1848,22 @@ def view_results(exam_id):
         exam=exam,
         sessions=sessions
     )
-    
+
+@app.route("/results")
+@login_required
+def results():
+
+    sessions = (
+        ExamSession.query
+        .filter_by(user_id=current_user.id)
+        .order_by(ExamSession.start_time.desc())
+        .all()
+    )
+
+    return render_template(
+        "results.html",
+        sessions=sessions
+    )
 
 @app.route("/admin/change-email", methods=["GET", "POST"])
 @login_required
