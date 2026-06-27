@@ -2,28 +2,128 @@
 
 {% block content %}
 
-<div class="card">
+<div class="container">
 
-    <h2>All Student Results</h2>
+    <div class="page-header">
+        <h1>📊 Examination Results Center</h1>
+        <p>Select an examination to view student performance.</p>
+    </div>
 
-    {% for r in results %}
+    {% if exams %}
 
-        <div style="
-            padding:10px;
-            border-bottom:1px solid #eee;
-        ">
+    <div class="exam-grid">
 
-            <p><b>User ID:</b> {{ r.user_id }}</p>
-            <p><b>Exam ID:</b> {{ r.exam_id }}</p>
-            <p><b>Score:</b> {{ r.score }} / {{ r.total }}</p>
-            <p><b>Date:</b> {{ r.timestamp }}</p>
+        {% for exam in exams %}
+
+        <div class="exam-card">
+
+            <div class="exam-top">
+                <span class="subject">
+                    {{ exam.subject }}
+                </span>
+            </div>
+
+            <h3>{{ exam.title }}</h3>
+
+            <p>
+                Duration:
+                {{ exam.duration }} mins
+            </p>
+
+            <p>
+                Pass Mark:
+                {{ exam.pass_mark }}%
+            </p>
+
+            <a
+                href="{{ url_for('view_results', exam_id=exam.id) }}"
+                class="btn-view"
+            >
+                View Results →
+            </a>
 
         </div>
 
-    {% endfor %}
-    
-     <a href="/leaderboard/1">🏆 View Leaderboard (Exam 1)</a>
-     
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-box">
+        No examinations found.
+    </div>
+
+    {% endif %}
+
 </div>
+
+<style>
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:25px;
+}
+
+.page-header{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.page-header h1{
+    margin-bottom:10px;
+}
+
+.page-header p{
+    color:#666;
+}
+
+.exam-grid{
+    display:grid;
+    grid-template-columns:
+        repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
+}
+
+.exam-card{
+    background:white;
+    border-radius:16px;
+    padding:25px;
+    box-shadow:
+        0 8px 25px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.exam-card:hover{
+    transform:translateY(-5px);
+}
+
+.subject{
+    background:#eef4ff;
+    color:#2563eb;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:13px;
+}
+
+.btn-view{
+    display:inline-block;
+    margin-top:15px;
+    background:#2563eb;
+    color:white;
+    padding:10px 18px;
+    border-radius:8px;
+    text-decoration:none;
+}
+
+.empty-box{
+    text-align:center;
+    padding:50px;
+    background:white;
+    border-radius:15px;
+}
+
+</style>
 
 {% endblock %}

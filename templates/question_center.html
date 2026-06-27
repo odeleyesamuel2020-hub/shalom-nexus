@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header">
+            <h4>Question Upload Center</h4>
+            <p class="mb-0">
+                Exam: {{ exam.title }}
+            </p>
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST"
+                  enctype="multipart/form-data">
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Select File
+                    </label>
+
+                    <input
+                        type="file"
+                        name="file"
+                        class="form-control"
+                        accept=".xlsx,.csv,.docx"
+                        required
+                    >
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Upload Questions
+                </button>
+
+                <a
+                    href="{{ url_for('manage_exam', exam_id=exam.id) }}"
+                    class="btn btn-secondary"
+                >
+                    Back
+                </a>
+
+            </form>
+
+            <hr>
+
+            <h6>Accepted Formats</h6>
+
+            <ul>
+                <li>Excel (.xlsx)</li>
+                <li>CSV (.csv)</li>
+                <li>Word (.docx)</li>
+            </ul>
+
+            <h6>Excel/CSV Format</h6>
+
+            <table class="table table-bordered">
+
+                <tr>
+                    <th>Question</th>
+                    <th>A</th>
+                    <th>B</th>
+                    <th>C</th>
+                    <th>D</th>
+                    <th>Answer</th>
+                </tr>
+
+                <tr>
+                    <td>What is 2 + 2?</td>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>4</td>
+                    <td>5</td>
+                    <td>c</td>
+                </tr>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2 style="margin-bottom:20px;">📝 Draft Questions</h2>
+
+    {% if drafts and drafts|length > 0 %}
+
+        <div class="draft-grid">
+
+            {% for q in drafts %}
+
+            <div class="draft-card">
+
+                <div class="question">
+                    <strong>Q:</strong> {{ q.question }}
+                </div>
+
+                <div class="options">
+                    <p>A: {{ q.option_a }}</p>
+                    <p>B: {{ q.option_b }}</p>
+                    <p>C: {{ q.option_c }}</p>
+                    <p>D: {{ q.option_d }}</p>
+                </div>
+
+                <div class="answer">
+                    <strong>Answer:</strong> {{ q.answer|upper }}
+                </div>
+
+                <div class="status">
+                    <span class="badge">DRAFT</span>
+                </div>
+
+                <div class="actions">
+                    <a href="{{ url_for('publish_question', question_id=q.id) }}" class="btn publish">
+                        ✅ Publish
+                    </a>
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <p>No draft questions found.</p>
+
+    {% endif %}
+
+</div>
+
+<style>
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+.draft-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));
+    gap:15px;
+}
+
+.draft-card{
+    background:#fff;
+    border-radius:12px;
+    padding:15px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    border-left:5px solid #ffc107;
+}
+
+.question{
+    font-size:16px;
+    margin-bottom:10px;
+}
+
+.options p{
+    margin:2px 0;
+    font-size:14px;
+    color:#555;
+}
+
+.answer{
+    margin-top:10px;
+    font-weight:bold;
+}
+
+.badge{
+    background:#ffc107;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:12px;
+    color:#000;
+}
+
+.actions{
+    margin-top:15px;
+}
+
+.btn.publish{
+    display:inline-block;
+    padding:8px 12px;
+    background:#28a745;
+    color:white;
+    text-decoration:none;
+    border-radius:6px;
+    font-size:14px;
+}
+
+.btn.publish:hover{
+    background:#218838;
+}
+
+</style>
+
+{% endblock %}

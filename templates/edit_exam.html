@@ -1,11 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+
+<h2>✏ Edit Exam</h2>
+
 <form method="POST">
 
-    <input name="title" value="{{ exam.title }}" placeholder="Exam Title">
+<label>Exam Title</label>
+<input type="text"
+       name="title"
+       value="{{ exam.title }}"
+       required>
 
-    <input name="subject" value="{{ exam.subject }}" placeholder="Subject">
+<label>Subject</label>
+<input type="text"
+       name="subject"
+       value="{{ exam.subject }}"
+       required>
 
-    <input name="duration" value="{{ exam.duration }}" placeholder="Duration (mins)">
+<label>Description</label>
+<textarea name="description"
+          rows="4">{{ exam.description or '' }}</textarea>
 
-    <button type="submit">Save Changes</button>
+<label>Duration (Minutes)</label>
+<input type="number"
+       name="duration"
+       value="{{ exam.duration }}">
+
+<label>Pass Mark</label>
+<input type="number"
+       name="pass_mark"
+       value="{{ exam.pass_mark }}">
+
+<label>Instructions</label>
+<textarea name="instructions"
+          rows="5">{{ exam.instructions or '' }}</textarea>
+
+<br><br>
+
+<button type="submit"
+        class="btn btn-success">
+    💾 Save Changes
+</button>
 
 </form>
+
+</div>
+
+{% endblock %}

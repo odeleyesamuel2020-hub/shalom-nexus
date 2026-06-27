@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <h1>
+        📊 {{ exam.title }}
+    </h1>
+
+    <p>
+        Subject:
+        <strong>{{ exam.subject }}</strong>
+    </p>
+
+    <hr>
+
+    <table class="results-table">
+
+        <thead>
+
+            <tr>
+                <th>Student</th>
+                <th>Reg No</th>
+                <th>Score</th>
+                <th>Status</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for s in sessions %}
+
+            <tr>
+
+                <td>
+                    {{ s.user.full_name if s.user else "Unknown" }}
+                </td>
+
+                <td>
+                    {{ s.user.registration_number if s.user else "-" }}
+                </td>
+
+                <td>
+                    {{ s.score }}
+                </td>
+
+                <td>
+
+                    {% if s.score >= exam.pass_mark %}
+
+                    <span class="pass">
+                        PASSED
+                    </span>
+
+                    {% else %}
+
+                    <span class="fail">
+                        FAILED
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<style>
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
+
+.results-table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+}
+
+.results-table th,
+.results-table td{
+    padding:15px;
+    border-bottom:1px solid #eee;
+}
+
+.results-table th{
+    background:#2563eb;
+    color:white;
+}
+
+.pass{
+    color:green;
+    font-weight:bold;
+}
+
+.fail{
+    color:red;
+    font-weight:bold;
+}
+
+</style>
+
+{% endblock %}

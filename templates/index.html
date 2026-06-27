@@ -1,130 +1,135 @@
 {% extends "base.html" %}
 
-{% block body_class %}landing{% endblock %}
+{% block title %}Shalom Nexus Academy{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+{% endblock %}
 
 {% block content %}
 
-<style>
-/* Clean SaaS gradient background */
-.overlay {
-    background: linear-gradient(135deg, #0b3d91, #1e5eff);
-    min-height: 100vh;
-    padding: 40px 20px;
-    color: white;
-}
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-content">
 
-/* Hero */
-.hero {
-    text-align: center;
-    padding: 60px 20px;
-}
+        <span class="badge">🚀 Next Gen CBT Platform</span>
 
-.hero h1 {
-    font-size: 42px;
-    margin-bottom: 15px;
-}
+        <h1>Learn Smarter.<br>Practice Better.<br>Succeed Faster.</h1>
 
-.hero p {
-    font-size: 18px;
-    max-width: 700px;
-    margin: auto;
-    opacity: 0.9;
-}
-
-/* Buttons */
-.hero-buttons {
-    margin-top: 25px;
-}
-
-.btn-primary {
-    background: #ffcc00;
-    color: black;
-}
-
-.btn {
-    padding: 12px 18px;
-    border-radius: 8px;
-    text-decoration: none;
-    margin: 5px;
-    display: inline-block;
-}
-
-/* Feature grid */
-.features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-    margin-top: 60px;
-}
-
-.feature-box {
-    background: rgba(255,255,255,0.1);
-    padding: 20px;
-    border-radius: 12px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.2);
-}
-
-.feature-box h3 {
-    margin-bottom: 10px;
-}
-
-/* Footer CTA */
-.cta {
-    text-align: center;
-    margin-top: 70px;
-    font-size: 18px;
-    opacity: 0.9;
-}
-</style>
-
-<div class="overlay">
-
-    <!-- HERO -->
-    <div class="hero">
-        <h1>Shalom Nexus Academy</h1>
-
-        <p>
-            A modern Computer-Based Test (CBT) and learning platform
-            designed for students, schools, and exam preparation.
-        </p>
+        <p>WAEC, JAMB, NECO & Post-UTME CBT practice platform.</p>
 
         <div class="hero-buttons">
-            <a href="/register" class="btn btn-primary">Get Started</a>
-            <a href="/login" class="btn" style="background:white; color:#0b3d91;">Login</a>
-        </div>
-    </div>
-
-    <!-- FEATURES -->
-    <div class="features">
-
-        <div class="feature-box">
-            <h3>📚 CBT Exams</h3>
-            <p>Take timed exams like WAEC and JAMB systems.</p>
+            <a href="{{ url_for('register') }}" class="btn primary">Get Started</a>
+            <a href="{{ url_for('login') }}" class="btn">Login</a>
         </div>
 
-        <div class="feature-box">
-            <h3>🧠 Smart Learning</h3>
-            <p>Practice and improve your academic performance.</p>
-        </div>
-
-        <div class="feature-box">
-            <h3>📊 Progress Tracking</h3>
-            <p>Monitor your scores and improvement easily.</p>
-        </div>
-
-        <div class="feature-box">
-            <h3>🔐 Secure System</h3>
-            <p>Safe login and protected exam environment.</p>
+        <div class="online-widget">
+            🟢 <span id="onlineCount">{{ online_count }}</span> students online
         </div>
 
     </div>
+</section>
 
-    <!-- CTA -->
-    <div class="cta">
-        Start learning smarter today with Shalom Nexus Academy 🚀
+<!-- STATS -->
+<section class="stats">
+    <div class="stat">
+        <h2 class="counter" data-target="{{ students_count }}">0</h2>
+        <p>Students</p>
     </div>
 
-</div>
+    <div class="stat">
+        <h2 class="counter" data-target="{{ exams_count }}">0</h2>
+        <p>Exams</p>
+    </div>
 
+    <div class="stat">
+        <h2 class="counter" data-target="{{ questions_count }}">0</h2>
+        <p>Questions</p>
+    </div>
+
+    <div class="stat">
+        <h2>98%</h2>
+        <p>Success Rate</p>
+    </div>
+</section>
+
+<!-- LIVE FEED -->
+<section class="live-section">
+
+    <h2>🔴 Live Activity</h2>
+
+    <div class="live-container">
+
+        {% for item in live_feed %}
+        <div class="live-item">
+            <div class="dot"></div>
+
+            <div class="live-text">
+                <strong>{{ item.name }}</strong>
+                <span>{{ item.action }}</span>
+            </div>
+
+            <small>{{ item.time }}</small>
+        </div>
+        {% endfor %}
+
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+    <div class="grid">
+        <div class="card">Real CBT Experience</div>
+        <div class="card">Instant Results</div>
+        <div class="card">Performance Analytics</div>
+        <div class="card">Secure Exams</div>
+        <div class="card">Question Bank</div>
+        <div class="card">Mobile Friendly</div>
+    </div>
+</section>
+
+<!-- RECENT EXAMS -->
+<section class="exams">
+    <h2>Recent Exams</h2>
+
+    <div class="grid">
+
+        {% if recent_exams %}
+            {% for exam in recent_exams %}
+            <div class="exam-card">
+                <h3>{{ exam.title }}</h3>
+                <p>{{ exam.subject }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="muted">No exams yet — system is initializing.</p>
+        {% endif %}
+
+    </div>
+</section>
+
+<!-- STUDENTS -->
+<section class="students">
+    <h2>Newest Students</h2>
+
+    <div class="grid">
+
+        {% if top_students %}
+            {% for s in top_students %}
+            <div class="student">
+                <div class="avatar">{{ s.full_name[0] }}</div>
+                <p>{{ s.full_name }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="muted">Students will appear here shortly.</p>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/landing.js') }}"></script>
 {% endblock %}

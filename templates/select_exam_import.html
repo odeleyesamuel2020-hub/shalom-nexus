@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card"><h2>📥 Import Question Into Exam</h2>
+
+<p>
+    Select the exam where you want to copy this question.
+</p>
+
+<table class="table">
+
+    <thead>
+
+        <tr>
+
+            <th>ID</th>
+
+            <th>Exam Title</th>
+
+            <th>Subject</th>
+
+            <th>Action</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for exam in exams %}
+
+        <tr>
+
+            <td>
+                {{ exam.id }}
+            </td>
+
+            <td>
+                {{ exam.title }}
+            </td>
+
+            <td>
+                {{ exam.subject }}
+            </td>
+
+            <td>
+
+                <a href="{{ url_for(
+                    'import_bank_question',
+                    question_id=question_id,
+                    exam_id=exam.id
+                ) }}"
+                class="btn btn-success">
+
+                ➕ Import
+
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+</div>{% endblock %}

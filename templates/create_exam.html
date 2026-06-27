@@ -2,11 +2,17 @@
 
 {% block content %}
 
-<div class="card"><h2>Create New Examination</h2>
+<div class="card"><h2>📝 Create New Examination</h2>
 
-<p>Create and configure a CBT examination.</p>
+<p>
+    Configure your CBT examination settings before adding questions.
+</p>
 
 <form method="POST">
+
+    <!-- BASIC INFORMATION -->
+
+    <h3>📚 Basic Information</h3>
 
     <label>Exam Title</label>
     <input
@@ -23,6 +29,17 @@
         placeholder="Biology"
         required
     >
+
+    <label>Description</label>
+    <textarea
+        name="description"
+        rows="4"
+        placeholder="Brief description of this examination..."
+    ></textarea>
+
+    <!-- EXAM SETTINGS -->
+
+    <h3>⏱ Examination Settings</h3>
 
     <label>Duration (Minutes)</label>
     <input
@@ -42,20 +59,49 @@
         max="100"
     >
 
-    <label>Instructions</label>
+    <!-- INSTRUCTIONS -->
+
+    <h3>📖 Candidate Instructions</h3>
+
     <textarea
         name="instructions"
-        rows="5"
-        placeholder="Enter examination instructions..."
+        rows="6"
+        placeholder="Enter examination instructions for candidates..."
     ></textarea>
 
-    <label>Question Randomization</label>
-    <select name="randomize_questions">
+    <!-- CBT FEATURES -->
+
+    <h3>⚙ CBT Features</h3>
+
+    <label>Shuffle Questions</label>
+    <select name="shuffle_questions">
         <option value="yes">Enable</option>
         <option value="no">Disable</option>
     </select>
 
-    <label>Publish Exam</label>
+    <label>Shuffle Options</label>
+    <select name="shuffle_options">
+        <option value="yes">Enable</option>
+        <option value="no">Disable</option>
+    </select>
+
+    <label>Allow Review Before Submission</label>
+    <select name="allow_review">
+        <option value="yes">Enable</option>
+        <option value="no">Disable</option>
+    </select>
+
+    <label>Allow Multiple Attempts</label>
+    <select name="allow_multiple_attempts">
+        <option value="no">Disable</option>
+        <option value="yes">Enable</option>
+    </select>
+
+    <!-- PUBLISHING -->
+
+    <h3>🚀 Publishing</h3>
+
+    <label>Exam Status</label>
     <select name="is_published">
         <option value="0">Save as Draft</option>
         <option value="1">Publish Immediately</option>
@@ -63,10 +109,90 @@
 
     <br><br>
 
-    <button type="submit" class="btn-primary">
-        Create Examination
+    <button
+        type="submit"
+        class="btn-primary"
+    >
+        ➕ Create Examination
     </button>
+
+    <a
+        href="{{ url_for('admin_dashboard') }}"
+        class="btn-secondary"
+    >
+        Cancel
+    </a>
 
 </form>
 
-</div>{% endblock %}
+</div><style>
+
+.card{
+    background:#fff;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+    max-width:900px;
+    margin:auto;
+}
+
+.card h2{
+    margin-bottom:5px;
+}
+
+.card h3{
+    margin-top:30px;
+    color:#333;
+    border-bottom:1px solid #eee;
+    padding-bottom:8px;
+}
+
+label{
+    display:block;
+    margin-top:15px;
+    margin-bottom:5px;
+    font-weight:600;
+}
+
+input,
+textarea,
+select{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:15px;
+}
+
+textarea{
+    resize:vertical;
+}
+
+.btn-primary{
+    background:#007bff;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    cursor:pointer;
+    text-decoration:none;
+}
+
+.btn-primary:hover{
+    background:#0056b3;
+}
+
+.btn-secondary{
+    background:#6c757d;
+    color:white;
+    padding:12px 20px;
+    border-radius:8px;
+    text-decoration:none;
+    margin-left:10px;
+}
+
+.btn-secondary:hover{
+    background:#545b62;
+}
+
+</style>{% endblock %}

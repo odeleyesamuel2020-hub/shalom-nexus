@@ -1,90 +1,210 @@
 {% extends "base.html" %}
 
 {% block content %}
+  <style>
+.dashboard-header{
+    background:linear-gradient(135deg, #0b3d91, #1e40af);
+    color:white;
+    padding:30px;
+    border-radius:20px;
+    margin-bottom:25px;
+    box-shadow:0 10px 30px rgba(0,0,0,.15);
+}
 
+.stats-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+    gap:20px;
+}
+
+.stat-card{
+    position:relative;
+    overflow:hidden;
+    border-radius:18px;
+    background:white;
+    padding:30px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.stat-card:hover{
+    transform: translateY(-8px);
+}
+
+.stat-card::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:5px;
+    background:linear-gradient(90deg, #0b3d91, #3b82f6);
+}
+</style>
+<!-- HEADER -->
 <div class="dashboard-header">
+
     <div>
-        <h1>Admin Dashboard</h1>
-        <p>Welcome back, {{ user.full_name }}</p>
+        <h1>🧠 Shalom Nexus Admin Center</h1>
+        <p>Welcome back, {{ user.full_name }} — System Overview Dashboard</p>
     </div>
 
-    <a href="/admin/create-exam" class="btn">
-        ➕ Create Exam
-    </a>
+    <div style="display:flex; gap:10px;">
+
+        <a href="{{ url_for('create_exam') }}" class="btn">
+            ➕ Create Exam
+        </a>
+
+        <a href="{{ url_for('question_bank') }}" class="btn btn-secondary">
+            📚 Question Bank
+        </a>
+
+    </div>
+
 </div>
 
-<!-- Statistics -->
+<!-- SYSTEM INSIGHTS -->
 <div class="stats-grid">
 
     <div class="stat-card">
         <h2>{{ students }}</h2>
-        <span>Total Students</span>
+        <span>👨‍🎓 Students</span>
     </div>
 
     <div class="stat-card">
         <h2>{{ exams }}</h2>
-        <span>Total Exams</span>
-    </div>
-
-    <div class="stat-card">
-        <h2>{{ questions }}</h2>
-        <span>Question Bank</span>
-    </div>
-
-    <div class="stat-card">
-        <h2>{{ attempts }}</h2>
-        <span>Exam Attempts</span>
+        <span>📝 Total Exams</span>
     </div>
 
     <div class="stat-card">
         <h2>{{ published_exams }}</h2>
-        <span>Published Exams</span>
+        <span>🚀 Published Exams</span>
+    </div>
+
+    <div class="stat-card">
+        <h2>{{ questions }}</h2>
+        <span>📦 Question Bank</span>
+    </div>
+
+    <div class="stat-card">
+        <h2>{{ attempts }}</h2>
+        <span>📊 Exam Attempts</span>
     </div>
 
 </div>
 
-<!-- Profile -->
+<!-- QUICK ACTION HUB -->
 <div class="card">
 
-    <h3>Administrator Profile</h3>
-
-    <p><strong>Name:</strong> {{ user.full_name }}</p>
-
-    <p><strong>Email:</strong> {{ user.email }}</p>
-
-    <p><strong>Role:</strong> Administrator</p>
-
-</div>
-
-<!-- Quick Actions -->
-<div class="card">
-
-    <h3>⚙️ Admin Control Panel</h3>
+    <h3>⚙️ Quick Action Hub</h3>
 
     <div class="action-grid">
 
         <a href="{{ url_for('create_exam') }}" class="action-btn">
-            ➕ Create Exam
+            ➕ Create New Exam
         </a>
 
         <a href="{{ url_for('admin_exams') }}" class="action-btn">
-            📚 Manage Exams
+            🧾 Manage Exams
+        </a>
+
+        <a href="{{ url_for('question_bank') }}" class="action-btn">
+            📚 Question Bank
         </a>
 
         <a href="{{ url_for('admin_results') }}" class="action-btn">
-            📊 View Results
+            📊 Results Analytics
         </a>
 
-        <a href="{{ url_for('change_email') }}" class="action-btn">
-            ✏️ Account Settings
-        </a>
-
-        <a href="{{ url_for('logout') }}" class="action-btn logout-btn">
-            🚪 Logout
+        <a href="{{ url_for('admin_dashboard') }}" class="action-btn">
+            🔄 Refresh Dashboard
         </a>
 
     </div>
 
 </div>
+
+<!-- EXAM STATUS OVERVIEW (NEW) -->
+<div class="card">
+
+    <h3>📊 Exam Status Overview</h3>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px;">
+
+        <div class="mini-card">
+            <h2>{{ exams - published_exams }}</h2>
+            <p>🟡 Draft Exams</p>
+        </div>
+
+        <div class="mini-card">
+            <h2>{{ published_exams }}</h2>
+            <p>🟢 Live Exams</p>
+        </div>
+
+        <div class="mini-card">
+            <h2>{{ attempts }}</h2>
+            <p>🧑‍💻 Total Attempts</p>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ADMIN PROFILE -->
+<div class="card">
+
+    <h3>👤 Administrator Profile</h3>
+
+    <p><b>Name:</b> {{ user.full_name }}</p>
+    <p><b>Email:</b> {{ user.email }}</p>
+    <p><b>Role:</b> System Administrator</p>
+
+</div>
+
+<!-- SYSTEM FOOTER PANEL -->
+<div class="card">
+
+    <h3>🛠 System Tools (Advanced)</h3>
+
+    <div class="action-grid">
+
+        <a href="{{ url_for('question_bank') }}" class="action-btn">
+            🧠 Manage Question Bank
+        </a>
+
+        <a href="{{ url_for('create_exam') }}" class="action-btn">
+            ⚙️ Exam Builder
+        </a>
+
+        <a href="{{ url_for('admin_results') }}" class="action-btn">
+            📈 Performance Reports
+        </a>
+
+    </div>
+
+</div>
+
+<style>
+
+.mini-card{
+    padding:15px;
+    background:#f8f9fa;
+    border-radius:10px;
+    text-align:center;
+}
+
+.mini-card h2{
+    margin:0;
+    font-size:28px;
+    color:#1e3a8a;
+}
+
+.mini-card p{
+    margin:5px 0 0;
+    font-size:14px;
+    color:#555;
+}
+
+</style>
 
 {% endblock %}

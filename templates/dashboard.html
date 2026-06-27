@@ -3,85 +3,134 @@
 {% block content %}
 
 <div class="dashboard-header">
+
     <div>
         <h1>🎓 Student Dashboard</h1>
-        <p>Welcome back, {{ user.full_name }}</p>
+        <p>Welcome back, {{ current_user.full_name }}</p>
     </div>
-</div><!-- Statistics --><div class="stats-grid"><div class="stat-card">
-    <h2>{{ available_exams|default(0) }}</h2>
-    <span>Available Exams</span>
-</div>
-
-<div class="stat-card">
-    <h2>{{ completed_exams|default(0) }}</h2>
-    <span>Completed Exams</span>
-</div>
-
-<div class="stat-card">
-    <h2>{{ average_score|default(0) }}%</h2>
-    <span>Average Score</span>
-</div>
-
-</div><!-- Profile --><div class="card"><h3>👤 Student Profile</h3>
-
-<div class="profile-grid">
-    <p><strong>Full Name:</strong> {{ user.full_name }}</p>
-    <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Role:</strong> Student</p>
-    <p><strong>Status:</strong> Active</p>
-</div>
-
-</div><!-- Quick Actions --><div class="card"><h3>⚡ Quick Actions</h3>
-
-<div class="action-grid">
-
-    <a href="{{ url_for('exams') }}" class="action-btn">
-        📚 Take Exams
-    </a>
-
-    <a href="{{ url_for('results') }}" class="action-btn">
-        📊 My Results
-    </a>
-
-    <a href="{{ url_for('logout') }}" class="action-btn logout-btn">
-        🚪 Logout
-    </a>
 
 </div>
 
-</div><!-- CBT Rules --><div class="card"><h3>📌 Examination Rules</h3>
+<!-- STATS CARDS -->
+<div class="stats-grid">
 
-<ul class="rules-list">
-    <li>Ensure stable internet before starting any examination.</li>
-    <li>Read all instructions carefully before beginning.</li>
-    <li>Do not refresh the page during an active exam.</li>
-    <li>Answers may be auto-saved by the CBT engine.</li>
-    <li>Exams may auto-submit when time expires.</li>
-    <li>Switching tabs may be monitored by the system.</li>
-    <li>Submit before the timer reaches zero.</li>
-</ul>
+    <div class="card stat">
+        <h2>{{ total_exams }}</h2>
+        <p>Available Exams</p>
+    </div>
 
-</div><!-- Recent Activity --><div class="card"><h3>📈 Academic Progress</h3>
+    <div class="card stat">
+        <h2>{{ total_attempts }}</h2>
+        <p>Attempts</p>
+    </div>
 
-<p>
-    Track your examination performance, monitor your scores,
-    and improve your overall performance through regular practice.
-</p>
+    <div class="card stat">
+        <h2>{{ avg_score }}%</h2>
+        <p>Average Score</p>
+    </div>
 
-</div><style>
+</div>
 
-.profile-grid{
+<!-- AVAILABLE EXAMS -->
+<div class="card">
+
+    <h3>📚 Available Exams</h3>
+
+    {% if exams %}
+
+        {% for exam in exams %}
+
+        <div class="exam-card">
+
+            <div>
+                <h4>{{ exam.title }}</h4>
+                <p>{{ exam.subject }} • {{ exam.duration }} mins</p>
+
+                {% if exam.start_date and exam.end_date %}
+                    <small>
+                        {{ exam.start_date }} → {{ exam.end_date }}
+                    </small>
+                {% endif %}
+            </div>
+
+            <a href="{{ url_for('take_exam', exam_id=exam.id) }}"
+               class="btn-primary">
+               Start Exam
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+        <p>No active exams available.</p>
+    {% endif %}
+
+</div>
+
+<!-- RECENT ATTEMPTS -->
+<div class="card">
+
+    <h3>📊 Recent Attempts</h3>
+
+    {% if attempts %}
+
+        {% for a in attempts %}
+
+        <div class="attempt-card">
+
+            <p><strong>Exam ID:</strong> {{ a.exam_id }}</p>
+            <p><strong>Score:</strong> {{ a.score }}</p>
+            <p><small>{{ a.start_time }}</small></p>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+        <p>No attempts yet.</p>
+    {% endif %}
+
+</div>
+
+<style>
+
+.stats-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:10px;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
+    margin-bottom:20px;
 }
 
-.rules-list{
-    padding-left:20px;
+.stat{
+    text-align:center;
+    background:#0d6efd;
+    color:white;
+    padding:20px;
+    border-radius:12px;
 }
 
-.rules-list li{
-    margin-bottom:10px;
+.exam-card{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px;
+    border-bottom:1px solid #eee;
 }
 
-</style>{% endblock %}
+.attempt-card{
+    padding:10px;
+    border-bottom:1px solid #eee;
+}
+
+.btn-primary{
+    padding:10px 15px;
+    background:#0d6efd;
+    color:white;
+    border-radius:8px;
+    text-decoration:none;
+}
+
+</style>
+
+{% endblock %}

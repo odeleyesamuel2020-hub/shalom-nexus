@@ -1,0 +1,117 @@
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #0b1220;
+    color: white;
+}
+
+/* HERO */
+.hero {
+    padding: 100px 20px;
+    text-align: center;
+    background: radial-gradient(circle, #1e3a8a, #0b1220);
+}
+
+.badge {
+    background: #22c55e;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.hero h1 {
+    font-size: 42px;
+}
+
+.btn {
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: white;
+    border: 1px solid white;
+}
+
+.primary {
+    background: #2563eb;
+    border: none;
+}
+
+/* STATS */
+.stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 40px;
+}
+
+.stat h2 {
+    font-size: 32px;
+}
+
+/* LIVE */
+.live-section {
+    padding: 40px;
+}
+
+.live-container {
+    max-width: 600px;
+    margin: auto;
+}
+
+.live-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    margin: 8px 0;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background: red;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(2); opacity: 0.4; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* ONLINE */
+.online-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: black;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #22c55e;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 20px;
+}
+
+.card, .exam-card, .student {
+    background: rgba(255,255,255,0.05);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    background: #2563eb;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -4,56 +4,118 @@
 
 <div class="card">
 
-    <div style="display:flex;justify-content:space-between;align-items:center;">
-
+    <div class="exam-header">
         <h2>{{ exam.title }}</h2>
 
-        <h3 style="color:#1e3a8a;">
-            ⏱ Time Left:
-            <span id="timer">--:--</span>
-        </h3>
-
+        <div class="timer-box">
+            ⏱ <span id="timer">--:--</span>
+        </div>
     </div>
 
-    <hr>
+    <div class="progress-container">
+        <div id="progressBar" class="progress-bar"></div>
+    </div>
 
-    <form method="POST"
-          action="{{ url_for('submit_exam', exam_id=exam.id) }}"
-          id="examForm">
+    <p class="answered-text">
+        Answered:
+        <span id="answeredCount">0</span>
+        / {{ questions|length }}
+    </p>
+
+    <div class="navigator">
+        {% for q in questions %}
+        <button
+            type="button"
+            id="nav-{{ loop.index0 }}"
+            onclick="showQuestion({{ loop.index0 }})">
+            {{ loop.index }}
+        </button>
+        {% endfor %}
+    </div>
+
+    <form
+        method="POST"
+        action="{{ url_for('submit_exam', exam_id=exam.id) }}"
+        id="examForm">
 
         {% for q in questions %}
 
-        <div class="question-card">
+        <div
+            class="question-card"
+            id="question-{{ loop.index0 }}"
+            {% if not loop.first %}
+            style="display:none;"
+            {% endif %}
+        >
+
+            <h3>Question {{ loop.index }}</h3>
 
             <p class="question-title">
-                {{ loop.index }}. {{ q.question }}
+                {{ q.question }}
             </p>
 
             <label>
-                <input type="radio" name="{{ q.id }}" value="A">
+                <input type="radio"
+                       name="{{ q.id }}"
+                       value="a">
                 {{ q.option_a }}
             </label>
 
             <label>
-                <input type="radio" name="{{ q.id }}" value="B">
+                <input type="radio"
+                       name="{{ q.id }}"
+                       value="b">
                 {{ q.option_b }}
             </label>
 
             <label>
-                <input type="radio" name="{{ q.id }}" value="C">
+                <input type="radio"
+                       name="{{ q.id }}"
+                       value="c">
                 {{ q.option_c }}
             </label>
 
             <label>
-                <input type="radio" name="{{ q.id }}" value="D">
+                <input type="radio"
+                       name="{{ q.id }}"
+                       value="d">
                 {{ q.option_d }}
             </label>
+
+            <button
+                type="button"
+                class="review-btn"
+                onclick="flagQuestion({{ loop.index0 }})">
+                🚩 Flag For Review
+            </button>
+
+            <div class="nav-buttons">
+
+                {% if not loop.first %}
+                <button
+                    type="button"
+                    onclick="showQuestion({{ loop.index0 - 1 }})">
+                    ⬅ Previous
+                </button>
+                {% endif %}
+
+                {% if not loop.last %}
+                <button
+                    type="button"
+                    onclick="showQuestion({{ loop.index0 + 1 }})">
+                    Next ➡
+                </button>
+                {% endif %}
+
+            </div>
 
         </div>
 
         {% endfor %}
 
-        <button type="submit" class="submit-btn">
+        <button
+            type="submit"
+            class="submit-btn">
             🚀 Submit Exam
         </button>
 
@@ -63,110 +125,394 @@
 
 <style>
 
-.question-card{
+.exam-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
     margin-bottom:20px;
-    padding:15px;
+}
+
+.timer-box{
+    background:#1e3a8a;
+    color:white;
+    padding:12px 20px;
+    border-radius:10px;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.progress-container{
+    width:100%;
+    height:20px;
+    background:#ddd;
+    border-radius:20px;
+    overflow:hidden;
+    margin-bottom:10px;
+}
+
+.progress-bar{
+    width:0%;
+    height:100%;
+    background:#16a34a;
+    transition:0.3s;
+}
+
+.answered-text{
+    font-weight:bold;
+    margin-bottom:15px;
+}
+
+.navigator{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:20px;
+}
+
+.navigator button{
+    width:42px;
+    height:42px;
+    border:none;
+    border-radius:8px;
+    background:#e5e7eb;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.current-question{
+    background:#2563eb !important;
+    color:white;
+}
+
+.answered{
+    background:#16a34a !important;
+    color:white;
+}
+
+.reviewed{
+    background:#f59e0b !important;
+    color:white;
+}
+
+.question-card{
+    background:#fafafa;
     border:1px solid #ddd;
     border-radius:10px;
-    background:#fafafa;
+    padding:20px;
+    margin-bottom:20px;
 }
 
 .question-title{
     font-weight:bold;
-    margin-bottom:10px;
+    margin-bottom:15px;
 }
 
 .question-card label{
     display:block;
-    margin:8px 0;
+    margin:10px 0;
+}
+
+.review-btn{
+    margin-top:15px;
+}
+
+.nav-buttons{
+    display:flex;
+    justify-content:space-between;
+    margin-top:20px;
 }
 
 .submit-btn{
     width:100%;
     padding:15px;
+    background:#1e3a8a;
+    color:white;
+    border:none;
+    border-radius:10px;
     font-size:16px;
+    cursor:pointer;
+}
+
+@media(max-width:768px){
+
+    .exam-header{
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .navigator button{
+        width:35px;
+        height:35px;
+    }
+
 }
 
 </style>
 
 <script>
 
-// ======================
-// CBT TIMER ENGINE
-// ======================
+let currentQuestion = 0;
+let violations = 0;
 
-let time = {{ exam.duration }} * 60;
+function showQuestion(index){
+
+    document.querySelectorAll(".question-card")
+    .forEach(card=>{
+        card.style.display="none";
+    });
+
+    document.getElementById(
+        "question-"+index
+    ).style.display="block";
+
+    document.querySelectorAll(
+        ".navigator button"
+    ).forEach(btn=>{
+        btn.classList.remove(
+            "current-question"
+        );
+    });
+
+    document.getElementById(
+        "nav-"+index
+    ).classList.add(
+        "current-question"
+    );
+
+    currentQuestion=index;
+}
+
+function flagQuestion(index){
+
+    document.getElementById(
+        "nav-"+index
+    ).classList.toggle(
+        "reviewed"
+    );
+
+}
+
+function updateProgress(){
+
+    let total =
+    document.querySelectorAll(
+        ".question-card"
+    ).length;
+
+    let answered =
+    document.querySelectorAll(
+        "input[type=radio]:checked"
+    ).length;
+
+    document.getElementById(
+        "answeredCount"
+    ).innerHTML = answered;
+
+    document.getElementById(
+        "progressBar"
+    ).style.width =
+    (answered/total)*100 + "%";
+
+    document.querySelectorAll(
+        ".question-card"
+    ).forEach((card,index)=>{
+
+        let checked =
+        card.querySelector(
+            "input[type=radio]:checked"
+        );
+
+        if(checked){
+
+            document.getElementById(
+                "nav-"+index
+            ).classList.add(
+                "answered"
+            );
+
+        }
+
+    });
+
+}
+
+document.querySelectorAll(
+'input[type=radio]'
+).forEach(input=>{
+
+    let saved =
+    localStorage.getItem(
+        input.name
+    );
+
+    if(saved===input.value){
+
+        input.checked=true;
+
+    }
+
+    input.addEventListener(
+        "change",
+        function(){
+
+            localStorage.setItem(
+                this.name,
+                this.value
+            );
+
+            updateProgress();
+
+        }
+    );
+
+});
+
+updateProgress();
+showQuestion(0);
+
+let time =
+{{ exam.duration }} * 60;
+
+let fiveMinuteWarning = false;
 
 function updateTimer(){
 
-    let minutes = Math.floor(time / 60);
-    let seconds = time % 60;
+    let minutes =
+    Math.floor(time/60);
 
-    if(seconds < 10){
-        seconds = "0" + seconds;
+    let seconds =
+    time%60;
+
+    if(seconds<10){
+
+        seconds =
+        "0"+seconds;
+
     }
 
-    document.getElementById("timer").innerHTML =
-        minutes + ":" + seconds;
+    document.getElementById(
+        "timer"
+    ).innerHTML =
+    minutes + ":" + seconds;
 
-    if(time <= 0){
+    if(time===300 &&
+       !fiveMinuteWarning){
 
-        alert("Time is up. Exam will be submitted.");
+        alert(
+            "Only 5 minutes remaining!"
+        );
 
-        document.getElementById("examForm").submit();
+        fiveMinuteWarning=true;
+
+    }
+
+    if(time<=0){
+
+        alert(
+            "Time is up. Submitting..."
+        );
+
+        document.getElementById(
+            "examForm"
+        ).submit();
 
         return;
+
     }
 
     time--;
+
 }
 
-setInterval(updateTimer,1000);
+setInterval(
+    updateTimer,
+    1000
+);
 
-
-// ======================
-// TAB SWITCH DETECTION
-// ======================
-
-document.addEventListener("visibilitychange",function(){
+document.addEventListener(
+"visibilitychange",
+function(){
 
     if(document.hidden){
 
+        violations++;
+
         alert(
-            "Warning: Tab switching detected."
+            "Warning! Tab switch detected ("+
+            violations+"/3)"
         );
+
+        if(violations>=3){
+
+            alert(
+                "Exam submitted automatically."
+            );
+
+            document.getElementById(
+                "examForm"
+            ).submit();
+
+        }
 
     }
 
 });
 
+document.getElementById(
+"examForm"
+).addEventListener(
+"submit",
+function(e){
 
-// ======================
-// AUTO SAVE ENGINE
-// ======================
+    let total =
+    document.querySelectorAll(
+        ".question-card"
+    ).length;
 
-setInterval(function(){
+    let answered =
+    document.querySelectorAll(
+        "input[type=radio]:checked"
+    ).length;
 
-    let form = document.getElementById("examForm");
+    if(answered<total){
 
-    if(form){
+        let proceed =
+        confirm(
+            "You still have "+
+            (total-answered)+
+            " unanswered questions. Submit anyway?"
+        );
 
-        fetch("/auto-save",{
-            method:"POST",
-            body:new FormData(form)
-        });
+        if(!proceed){
+
+            e.preventDefault();
+            return;
+
+        }
 
     }
 
-},10000);
+    let finalSubmit =
+    confirm(
+        "Are you sure you want to submit?"
+    );
 
+    if(!finalSubmit){
 
-// ======================
-// REFRESH WARNING
-// ======================
+        e.preventDefault();
+        return;
 
-window.onbeforeunload = function(){
+    }
+
+    localStorage.clear();
+
+});
+
+window.onbeforeunload =
+function(){
+
     return "Leaving this page may affect your exam.";
+
 };
 
 </script>

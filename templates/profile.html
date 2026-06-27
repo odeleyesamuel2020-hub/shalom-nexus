@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="row">
+
+        <!-- PROFILE CARD -->
+        <div class="col-md-4">
+
+            <div class="card shadow-sm text-center p-4">
+
+                <div class="avatar-circle mb-3">
+                    {{ user.full_name[0] }}
+                </div>
+
+                <h4>{{ user.full_name }}</h4>
+
+                <p class="text-muted">
+                    {{ user.email }}
+                </p>
+
+                <span class="badge bg-primary">
+                    {{ user.registration_number }}
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- EDIT FORM -->
+        <div class="col-md-8">
+
+            <div class="card shadow-sm p-4">
+
+                <h4>Edit Profile</h4>
+
+                <form method="POST">
+
+                    <div class="mb-3">
+                        <label>Full Name</label>
+                        <input type="text"
+                               name="full_name"
+                               value="{{ user.full_name }}"
+                               class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Phone Number</label>
+                        <input type="text"
+                               name="phone_number"
+                               value="{{ user.phone_number }}"
+                               class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Institution</label>
+                        <input type="text"
+                               name="institution"
+                               value="{{ user.institution }}"
+                               class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Gender</label>
+                        <select name="gender" class="form-control">
+
+                            <option value="Male"
+                                {% if user.gender == "Male" %}selected{% endif %}>
+                                Male
+                            </option>
+
+                            <option value="Female"
+                                {% if user.gender == "Female" %}selected{% endif %}>
+                                Female
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary w-100">
+                        Update Profile
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -63,7 +63,7 @@
 
     <form method="POST">
 
-        <input name="email" type="email" placeholder="Email" required>
+       <input type="text" name="identifier"  placeholder="Email or Registration Number" required>
 
         <input name="password" type="password" placeholder="Password" required>
 
@@ -75,6 +75,12 @@
         No account?
         <a href="/register">Create account</a>
     </div>
+    <div class="text-center">
+    <a href="{{ url_for('forgot_password') }}">
+       Forgot Password?
+    </a>
+
+ </div>
 
 </div>
 
