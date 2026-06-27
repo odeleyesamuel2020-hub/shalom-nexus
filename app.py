@@ -45,6 +45,7 @@ from openpyxl import load_workbook
 from docx import Document
 import random
 import json
+import os
 
 from models import (
     db,
@@ -90,7 +91,10 @@ app.config["MAIL_SUPPRESS_SEND"] = False
 mail = Mail(app)
 
 app.config["SECRET_KEY"] = "CHANGE_TO_SECURE_KEY"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///shalom.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
+    "DATABASE_URL",
+    "sqlite:///shalom.db"
+)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 serializer = URLSafeTimedSerializer(
     app.config["SECRET_KEY"]
