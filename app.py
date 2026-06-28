@@ -1,3 +1,5 @@
+import os
+print("DATABASE_URL:", os.getenv("DATABASE_URL"))
 from flask import (
     Flask,
     render_template,
