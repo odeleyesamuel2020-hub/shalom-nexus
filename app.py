@@ -1,5 +1,3 @@
-import os
-print("DATABASE_URL:", os.getenv("DATABASE_URL"))
 from flask import (
     Flask,
     render_template,
@@ -200,8 +198,6 @@ Shalom Nexus CBT Team
     mail.send(msg)
         
 with app.app_context():
-    db.create_all()
-
     admin = User.query.filter_by(
         email="odeleyesamuel2020@gmail.com"
     ).first()
