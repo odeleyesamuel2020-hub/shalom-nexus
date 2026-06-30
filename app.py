@@ -1,10 +1,18 @@
+import os
+import uuid
+import json
+import random
+import csv
+from io import BytesIO, TextIOWrapper
+
 from flask import (
     Flask,
     render_template,
     request,
     redirect,
     url_for,
-    flash
+    flash,
+    send_file
 )
 
 from flask_login import (
@@ -15,53 +23,89 @@ from flask_login import (
     current_user
 )
 
-from models import (
-    db,
-    User,
-    Exam,
-    Question,
-    QuestionBank,
-    ExamSession
-)
-
-from werkzeug.security import (
-    generate_password_hash,
-    check_password_hash
-)
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_migrate import Migrate
-from cbt_engine import CBTSessionEngine
 from flask_mail import Mail, Message
-from datetime import datetime, UTC
-from io import BytesIO
-from flask import send_file
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
 from itsdangerous import URLSafeTimedSerializer
-from flask_mail import Message
-import uuid
-import csv
-from io import TextIOWrapper
+from datetime import datetime, UTC
+
 from openpyxl import load_workbook
 from docx import Document
-import random
-import json
-import os
 
-from models import (
-    db,
-    User,
-    Exam,
-    Question,
-    ExamSession
-)
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
 
+from models import db, User, Exam, Question, QuestionBank, ExamSession
+from cbt_engine import CBTSessionEngine
+
+
+# ======================
+# APP INIT
+# ======================
 app = Flask(__name__)
 
-# ======================
-# GRADE ENGINE (HELPER)
-# ======================
 
+# ======================
+# BASIC CONFIG
+# ======================
+app.config["SECRET_KEY"] = "CHANGE_TO_SECURE_KEY"
+
+
+# ======================
+# MAIL CONFIG
+# ======================
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USERNAME"] = "shalomsp100@gmail.com"
+app.config["MAIL_PASSWORD"] = "tqwubutzasovybrm"
+app.config["MAIL_DEFAULT_SENDER"] = "shalomsp100@gmail.com"
+app.config["MAIL_MAX_EMAILS"] = None
+app.config["MAIL_SUPPRESS_SEND"] = False
+
+mail = Mail(app)
+
+
+# ======================
+# DATABASE CONFIG (FIXED FOR RENDER)
+# ======================
+db_url = os.environ.get("DATABASE_URL")
+
+if db_url:
+    if db_url.startswith("postgres://"):
+        db_url = db_url.replace(
+            "postgres://",
+            "postgresql://",
+            1
+        )
+else:
+    db_url = "sqlite:///shalom_nexus.db"
+
+app.config["SQLALCHEMY_DATABASE_URI"] = db_url
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "connect_args": {
+        "sslmode": "require"
+    }
+}
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+
+# ======================
+# EXTENSIONS INIT
+# ======================
+db.init_app(app)
+migrate = Migrate(app, db)
+
+serializer = URLSafeTimedSerializer(app.config["SECRET_KEY"])
+
+
+# ======================
+# GRADE ENGINE
+# ======================
 def calculate_grade(score, total):
+    if total == 0:
+        return "F"
+
     percent = (score / total) * 100
 
     if percent >= 70:
@@ -74,36 +118,6 @@ def calculate_grade(score, total):
         return "D"
     else:
         return "F"
-        
-# ======================
-# CONFIG
-# ======================
-app.config["MAIL_SERVER"] = "smtp.gmail.com"
-app.config["MAIL_PORT"] = 587
-app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USERNAME"] = "shalomsp100@gmail.com"
-app.config["MAIL_PASSWORD"] = "tqwubutzasovybrm"
-
-app.config["MAIL_DEFAULT_SENDER"] = "shalomsp100@gmail.com"
-app.config["MAIL_MAX_EMAILS"] = None
-app.config["MAIL_SUPPRESS_SEND"] = False
-
-mail = Mail(app)
-
-app.config["SECRET_KEY"] = "CHANGE_TO_SECURE_KEY"
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-serializer = URLSafeTimedSerializer(
-    app.config["SECRET_KEY"]
-)
-db.init_app(app)
-migrate = Migrate(app, db)
-
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-import os
-import uuid
-
 
 def generate_certificate(user, exam, score, total):
 
